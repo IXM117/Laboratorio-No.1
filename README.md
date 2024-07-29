@@ -1,4 +1,5 @@
-# code 1
+# first code
 ![alt text](image.png)
-# code 2
+# second code
 ![alt text](image-1.png)
+1 is 2 and 2 is 1

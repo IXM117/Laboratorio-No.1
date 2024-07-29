@@ -1,0 +1,112 @@
+
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        List<Product> products = new List<Product>();
+        string input;
+        do
+        {
+            Console.Clear();
+            Console.WriteLine("Ingrese el nombre del producto (o 's' para terminar, 'm' para cambiar un producto):");
+            string name = Console.ReadLine();
+            if (name.ToLower() == "s") break;
+
+            if (name.ToLower() == "m")
+            {
+                ModifyProduct(products);
+                continue;
+            }
+
+            Console.WriteLine("Ingrese el precio del producto:");
+            try
+            {
+                if (decimal.TryParse(Console.ReadLine(), out decimal price))
+                {
+                    products.Add(new Product(name, price));
+                }
+                else
+                {
+                    Console.WriteLine("Precio inválido. Intente de nuevo.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            Console.ReadKey();
+
+        } while (true);
+
+        decimal total = CalculateTotal(products);
+        decimal discount = ApplyDiscount(total);
+        decimal finalTotal = total - discount;
+
+        Console.WriteLine($"Total de la compra: {total:C}");
+        Console.WriteLine($"Descuento aplicado: {discount:C}");
+        Console.WriteLine($"Total final: {finalTotal:C}");
+    }
+
+    static void ModifyProduct(List<Product> products)
+    {
+        Console.WriteLine("Ingrese el nombre del producto a modificar:");
+        string name = Console.ReadLine();
+        Product product = products.Find(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+
+        if (product != null)
+        {
+            Console.WriteLine("Ingrese el nuevo precio del producto:");
+            try
+            {
+                if (decimal.TryParse(Console.ReadLine(), out decimal newPrice))
+                {
+                    product.Price = newPrice;
+                    Console.WriteLine("Producto modificado exitosamente.");
+                }
+                else
+                {
+                    Console.WriteLine("Precio inválido. Intente de nuevo.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Producto no encontrado.");
+        }
+    }
+
+    static decimal CalculateTotal(List<Product> products)
+    {
+        decimal total = 0;
+        foreach (var product in products)
+        {
+            total += product.Price;
+        }
+        return total;
+    }
+
+    static decimal ApplyDiscount(decimal total)
+    {
+        const decimal discountThreshold = 100;
+        const decimal discountRate = 0.10m;
+        return total > discountThreshold ? total * discountRate : 0;
+    }
+}
+
+class Product
+{
+    public string Name { get; }
+    public decimal Price { get; set; }
+
+    public Product(string name, decimal price)
+    {
+        Name = name;
+        Price = price;
+    }
+}
