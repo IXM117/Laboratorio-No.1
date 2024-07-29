@@ -1,0 +1,132 @@
+using System;
+using System.Collections.Generic;
+
+public class Producto
+{
+    public string Nombre { get; set; }
+    public decimal Precio { get; set; }
+    public int Stock { get; set; }
+
+    public Producto(string nombre, decimal precio, int stock)
+    {
+        Nombre = nombre;
+        Precio = precio;
+        Stock = stock;
+    }
+
+    public void Vender(int cantidad)
+    {
+        try
+        {
+            if (Stock >= cantidad)
+            {
+                Stock -= cantidad;
+                Console.WriteLine($"{cantidad} unidades de {Nombre} vendidas.");
+            }
+            else
+            {
+                Console.WriteLine("Stock insuficiente.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al vender el producto: {ex.Message}");
+        }
+    }
+
+    public void Reabastecer(int cantidad)
+    {
+        try
+        {
+            Stock += cantidad;
+            Console.WriteLine($"{cantidad} unidades de {Nombre} reabastecidas.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al reabastecer el producto: {ex.Message}");
+        }
+    }
+
+    public void ActualizarPrecio(decimal nuevoPrecio)
+    {
+        try
+        {
+            Precio = nuevoPrecio;
+            Console.WriteLine($"El precio de {Nombre} ha sido actualizado a {Precio:C}.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al actualizar el precio: {ex.Message}");
+        }
+    }
+
+    public void MostrarResumen()
+    {
+        Console.WriteLine($"Producto: {Nombre}, Precio: {Precio:C}, Stock: {Stock}");
+    }
+}
+
+public class Tienda
+{
+    private List<Producto> productos = new List<Producto>();
+
+    public void AgregarProducto(Producto producto)
+    {
+        try
+        {
+            Console.Clear();
+            productos.Add(producto);
+            Console.WriteLine($"Producto {producto.Nombre} agregado.");
+            Console.ReadKey();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al agregar el producto: {ex.Message}");
+        }
+    }
+
+    public Producto ConsultarProducto(string nombre)
+    {
+        try
+        {
+            return productos.Find(p => p.Nombre == nombre);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al consultar el producto: {ex.Message}");
+            return null;
+        }
+    }
+
+    public void ModificarProducto(string nombre, decimal nuevoPrecio, int nuevoStock)
+    {
+        try
+        {
+            Producto producto = ConsultarProducto(nombre);
+            if (producto != null)
+            {
+                producto.Precio = nuevoPrecio;
+                producto.Stock = nuevoStock;
+                Console.WriteLine($"Producto {nombre} modificado.");
+            }
+            else
+            {
+                Console.WriteLine("Producto no encontrado.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al modificar el producto: {ex.Message}");
+        }
+    }
+
+    public void MostrarResumenDiario()
+    {
+        Console.WriteLine("Resumen del día:");
+        foreach (var producto in productos)
+        {
+            producto.MostrarResumen();
+        }
+    }
+}
+
